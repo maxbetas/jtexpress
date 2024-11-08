@@ -11,8 +11,8 @@ type Response struct {
 
 // TrackInfo 轨迹信息
 type TrackInfo struct {
-	BillCode string       `json:"billCode"`
-	Details  []TrackPoint `json:"details"`
+	BillCode string        `json:"billCode"`
+	Details  []*TrackPoint `json:"details"`
 }
 
 // TrackPoint 轨迹点信息

@@ -1,3 +1,3 @@
 module github.com/maxbetas/jtexpress
 
-go 1.20
+go 1.16
