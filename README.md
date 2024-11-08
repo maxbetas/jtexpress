@@ -4,8 +4,8 @@
 
 ## 功能特性
 
-- 轨迹查询
-- 物流订阅（支持单个和批量）
+- 轨迹查询（支持单个和批量查询）
+- 物流订阅（支持单个和批量订阅）
 - 完整的错误处理
 - 类型安全的 API 封装
 - 支持自定义配置
@@ -13,7 +13,7 @@
 ## 安装
 
 ```bash
-go get github.com/maxbetas/jtexpress
+go get -u github.com/maxbetas/jtexpress@latest
 ```
 
 ## 快速开始
@@ -21,6 +21,8 @@ go get github.com/maxbetas/jtexpress
 ### 初始化客户端
 
 ```go
+import "github.com/maxbetas/jtexpress"
+
 client := jtexpress.NewClient(
     "your_api_account",    // API账号
     "your_private_key",    // API私钥
@@ -31,10 +33,18 @@ client := jtexpress.NewClient(
 可以通过配置选项自定义客户端行为：
 
 ```go
+import (
+    "net/http"
+    "time"
+    "github.com/maxbetas/jtexpress"
+)
+
 client := jtexpress.NewClient(
     "your_api_account",
     "your_private_key",
-    jtexpress.WithHTTPClient(&http.Client{Timeout: 5 * time.Second}),
+    jtexpress.WithHTTPClient(&http.Client{
+        Timeout: 5 * time.Second,
+    }),
     jtexpress.WithBaseURL("https://custom-api-url.com"),
 )
 ```
@@ -54,7 +64,7 @@ if err != nil {
 }
 
 // 多个运单查询（用英文逗号分隔）
-resp, err := client.Logistics.QueryTrack("JT2099306666983,JT2099306666984,JT2099306666985")
+resp, err := client.Logistics.QueryTrack("JT2099306666983,JT2099306666984")
 if err != nil {
     log.Printf("查询失败: %v\n", err)
     return
@@ -84,12 +94,31 @@ if resp.Success {
 支持单个和批量运单订阅：
 
 ```go
+// 设置订阅参数
+traceNode := "1&2&3&4&5&6&7&8&9&10" // 订阅节点
+backUrl := "https://your-domain.com/callback" // 回调地址
+
 // 单个运单订阅
 resp, err := client.Logistics.Subscribe("JT2099306666983", traceNode, backUrl)
+if err != nil {
+    log.Printf("订阅失败: %v\n", err)
+    return
+}
 
 // 批量运单订阅
 billCodes := []string{"JT2099306666983", "JT2099306666984"}
 resp, err := client.Logistics.Subscribe(billCodes, traceNode, backUrl)
+if err != nil {
+    log.Printf("批量订阅失败: %v\n", err)
+    return
+}
+
+// 处理响应
+if resp.Code == "1" {
+    fmt.Println("订阅成功")
+} else {
+    fmt.Printf("订阅失败: %s\n", resp.Msg)
+}
 ```
 
 #### 订阅节点说明
@@ -117,38 +146,43 @@ SDK 提供了详细的错误信息：
 ```go
 resp, err := client.Logistics.QueryTrack(billCode)
 if err != nil {
-    switch e := err.(type) {
-    case *errors.APIError:
-        fmt.Printf("API错误: [%s] %s\n", e.Code, e.Message)
-    default:
-        fmt.Printf("其他错误: %v\n", err)
-    }
+    // 处理错误
+    fmt.Printf("错误: %v\n", err)
+    return
+}
+
+// 检查业务响应
+if !resp.Success {
+    fmt.Printf("业务错误: [%d] %s\n", resp.Code, resp.Msg)
+    return
 }
 ```
 
 ## 最佳实践
 
 ### 1. 配置建议
-- 设置合适的超时时间
+- 设置合适的超时时间（建议 5-10 秒）
 - 在生产环境使用 HTTPS
 - 妥善保管 API 私钥
 
 ### 2. 错误处理建议
 - 对所有 API 调用进行错误处理
 - 实现错误重试机制
-- 记录错误日志
+- 记录详细的错误日志
 
 ### 3. 性能优化建议
 - 使用批量接口处理多个运单
-- 合理使用缓存机制
 - 控制并发请求数量
+- 合理设置超时时间
 
 ## 更新日志
 
 ### v1.0.0
 - 初始版本发布
-- 支持轨迹查询
-- 支持物流订阅
+- 支持轨迹查询（单个/批量）
+- 支持物流订阅（单个/批量）
+- 完整的错误处理
+- 支持自定义配置
 
 ## 许可证
 
