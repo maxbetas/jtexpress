@@ -11,11 +11,8 @@
 *.test
 *.out
 
-# Examples
-examples/
-
-# Docs
-docs/
+# Example
+example/
 
 # Others
-.DS_Store 
+.DS_Store

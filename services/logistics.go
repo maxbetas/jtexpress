@@ -2,10 +2,13 @@ package services
 
 import (
 	"fmt"
-	"jtexpress/types"
+
+	"github.com/maxbetas/jtexpress/types"
 )
 
-// LogisticsService 物流相关服务
+// Package services 提供各种 API 服务的实现
+
+// LogisticsService 提供物流相关的 API 服务
 type LogisticsService struct {
 	client APIClient
 }

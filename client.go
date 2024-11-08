@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"jtexpress/services"
+	"github.com/maxbetas/jtexpress/services"
 )
 
 // Package jtexpress 提供极兔快递 API 的 Go 语言封装
