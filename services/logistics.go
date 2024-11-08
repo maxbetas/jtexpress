@@ -19,13 +19,19 @@ func NewLogisticsService(client APIClient) *LogisticsService {
 }
 
 // QueryTrack 查询物流轨迹
-func (s *LogisticsService) QueryTrack(billCode string) (*types.TrackResponse, error) {
+// billCodes: 运单号，支持多个运单号，用英文逗号分隔，如："JT1234,JT5678"
+func (s *LogisticsService) QueryTrack(billCodes string) (*types.TrackResponse, error) {
+	// 参数验证
+	if billCodes == "" {
+		return nil, fmt.Errorf("billCodes cannot be empty")
+	}
+
 	req := types.TrackRequest{
 		CommonRequest: types.CommonRequest{
 			Lang:     "zh",
 			TimeType: "1",
 		},
-		BillCodes: billCode,
+		BillCodes: billCodes, // 支持多个运单号，用逗号分隔
 	}
 
 	var resp types.TrackResponse

@@ -43,15 +43,41 @@ client := jtexpress.NewClient(
 
 ### 轨迹查询
 
-查询单个运单的物流轨迹：
+支持单个和批量运单查询：
 
 ```go
+// 单个运单查询
 resp, err := client.Logistics.QueryTrack("JT2099306666983")
 if err != nil {
     log.Printf("查询失败: %v\n", err)
     return
 }
+
+// 多个运单查询（用英文逗号分隔）
+resp, err := client.Logistics.QueryTrack("JT2099306666983,JT2099306666984,JT2099306666985")
+if err != nil {
+    log.Printf("查询失败: %v\n", err)
+    return
+}
+
+// 处理响应
+if resp.Success {
+    for _, track := range resp.Data {
+        fmt.Printf("运单号: %s\n", track.BillCode)
+        for _, point := range track.TrackPoints {
+            fmt.Printf("时间：%s\n", point.ScanTime)
+            fmt.Printf("类型：%s\n", point.ScanType)
+            fmt.Printf("位置：%s\n", point.Location)
+            fmt.Printf("描述：%s\n", point.Description)
+        }
+    }
+}
 ```
+
+注意事项：
+- 多个运单号使用英文逗号分隔
+- 建议单次查询不超过 10 个运单号
+- 响应中的轨迹点按时间倒序排列
 
 ### 物流订阅
 
