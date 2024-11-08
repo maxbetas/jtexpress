@@ -17,3 +17,5 @@ example/
 # Others
 .DS_Store
 /examples
+*.go
+/jtexpress-main
