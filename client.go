@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/maxbetas/jtexpress/services"
@@ -26,9 +25,6 @@ type Client struct {
 
 	// 服务
 	Logistics *services.LogisticsService // 物流服务
-
-	// 缓存
-	cache sync.Map // 用于缓存一些常用数据
 }
 
 // ClientOption 定义客户端配置选项
@@ -153,13 +149,4 @@ func (c *Client) Post(data interface{}, apiPath string, result interface{}) erro
 func (c *Client) GetAPIAccount() int64 {
 	account, _ := strconv.ParseInt(c.apiAccount, 10, 64)
 	return account
-}
-
-// 添加缓存方法
-func (c *Client) getCachedValue(key string) (interface{}, bool) {
-	return c.cache.Load(key)
-}
-
-func (c *Client) setCachedValue(key string, value interface{}) {
-	c.cache.Store(key, value)
 }

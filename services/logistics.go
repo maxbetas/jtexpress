@@ -6,8 +6,6 @@ import (
 	"github.com/maxbetas/jtexpress/types"
 )
 
-// Package services 提供各种 API 服务的实现
-
 // LogisticsService 提供物流相关的 API 服务
 type LogisticsService struct {
 	client APIClient
