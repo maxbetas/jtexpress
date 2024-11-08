@@ -1,0 +1,21 @@
+# IDE
+.idea/
+.vscode/
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Examples
+examples/
+
+# Docs
+docs/
+
+# Others
+.DS_Store 
